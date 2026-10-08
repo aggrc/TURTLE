@@ -1,0 +1,6 @@
+{
+  "version": "TURTLE v4",
+  "file": "turtle.hex",
+  "sha256": "3d8c2f9811eb5983707ca25d721b1f54867e96b95cee80f6f88ecf12a83a2fb0",
+  "target": "atmega328p-nano-16mhz"
+}

@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>TURTLE | Temperature Console</title>
+  <meta name="description" content="Connect your TURTLE over USB to view and record two thermocouple channels in your browser.">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230e4443'/%3E%3Cpath d='M8 9h16v4h-6v13h-4V13H8z' fill='%239bf2d6'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="style.css?v=8">
+</head>
+<body>
+  <header><div class="brand"><span class="mark" aria-hidden="true">T</span><div><strong>TURTLE</strong><span class="subtitle">Temperature console</span></div></div></header>
+  <main>
+    <section class="connection panel" aria-label="Device connection">
+      <div><span class="eyebrow">DEVICE CONNECTION</span><h1 id="connection-title">Connect your TURTLE</h1></div>
+      <div class="connection-actions"><button id="connect" class="primary">Connect USB</button><button id="disconnect" class="secondary" hidden>Disconnect</button></div>
+    </section>
+    <div id="message" class="notice" role="status" aria-live="polite">Connect your device, then start a recording when you’re ready.</div>
+    <div class="workspace">
+      <div class="measurements">
+        <section class="channels" aria-label="Live temperatures">
+          <article class="channel panel"><div class="channel-head"><h2><i class="swatch one"></i>Thermocouple 1</h2><span id="state-0" class="channel-status">Awaiting device</span></div><label class="sr-only" for="name-0">Thermocouple 1 name</label><input id="name-0" class="channel-name" placeholder="Add a name…" maxlength="60" autocomplete="off"><div class="reading"><span id="temp-0">—</span><span class="unit">°C</span></div><p id="note-0">No measurements received</p></article>
+          <article class="channel panel"><div class="channel-head"><h2><i class="swatch two"></i>Thermocouple 2</h2><span id="state-1" class="channel-status">Awaiting device</span></div><label class="sr-only" for="name-1">Thermocouple 2 name</label><input id="name-1" class="channel-name" placeholder="Add a name…" maxlength="60" autocomplete="off"><div class="reading"><span id="temp-1">—</span><span class="unit">°C</span></div><p id="note-1">No measurements received</p></article>
+        </section>
+        <section class="chart panel" aria-label="Recording temperature graph">
+          <div class="section-heading"><div><h2>Temperature trace</h2><p id="chart-subtitle">Start a recording to plot temperatures</p></div><span class="badge" id="feed-status">WAITING</span></div>
+          <div class="plot"><svg id="graph" viewBox="0 0 800 300" role="img" aria-label="Temperature in degrees Celsius versus seconds since recording started"></svg><div id="chart-empty">Your recording will appear here<span>Live readings stay above. Start recording to plot samples.</span></div></div>
+          <div class="chart-footer"><span><i class="swatch one"></i><span id="legend-0">TC 1</span> <i class="swatch two"></i><span id="legend-1">TC 2</span></span><span id="last-packet">No data yet</span></div>
+        </section>
+      </div>
+      <aside class="panel controls">
+        <section><span class="eyebrow">CAPTURE</span><h2>Session recording</h2><label for="session-name">Recording name</label><input id="session-name" placeholder="Optional session name" maxlength="80" autocomplete="off"><p class="small">Automatically saved to your chosen folder.</p><p id="file-status" class="small" role="status"></p><div class="session-stats"><div><span>Elapsed</span><strong id="elapsed">00:00</strong></div><div><span>Samples</span><strong id="count">0</strong></div></div><button id="record" class="primary full" disabled>Start recording</button><button id="save-now" class="secondary full" hidden>Save CSV now</button><p class="small" id="record-help">Each recording starts a fresh graph and folder. Stop recording to finish saving before closing.</p><p id="storage-status" class="small" role="status">Opening saved recordings…</p></section>
+        <section class="settings"><span class="eyebrow">DEVICE SETTINGS</span><label for="type">Thermocouple type</label><select id="type"><option>T</option><option>K</option><option>J</option><option>E</option><option>N</option><option>S</option><option>R</option><option>B</option></select><label for="rate">Sampling interval</label><select id="rate"><option value="1">Every 1 second</option><option value="2">Every 2 seconds</option><option value="3">Every 3 seconds</option><option value="4">Every 4 seconds</option><option value="5">Every 5 seconds</option><option value="0">Maximum (up to 4 / second)</option></select><button id="apply" class="secondary full" disabled>Send settings</button><button id="reset-faults" class="secondary full" disabled>Reset sensor faults</button></section>
+      </aside>
+    </div>
+    <section class="panel saved"><div class="section-heading"><div><h2>Browser backup recordings</h2><p>A recovery copy of each session. CSV files are also saved in your chosen folder. Locked files are preserved; a continuation contains the complete run.</p></div><button id="refresh-sessions" class="secondary">Refresh list</button></div><p class="small">Clearing site data or using private browsing can remove saved recordings. Keep the computer awake while recording.</p><p id="sessions-empty">No recordings yet. Connect TURTLE to start your first session.</p><div id="sessions-list"></div></section>
+    <details class="panel firmware-panel">
+      <summary>Update TURTLE firmware</summary>
+      <div class="firmware-body">
+        <p id="firmware-help">Classic Arduino Nano / ATmega328P only. Disconnect before updating.</p>
+        <p class="small">TURTLE v4 firmware is included. Wait for Ready below, then click Update firmware.</p>
+        <details><summary>Advanced: use a different firmware file</summary>
+        <label for="firmware-file">TURTLE firmware file (.hex)</label>
+        <input id="firmware-file" type="file" accept=".hex">
+        <p class="small">Use the application HEX supplied by your TURTLE administrator. Do not choose a file named “with_bootloader”.</p></details>
+        <label for="bootloader-mode">Bootloader</label>
+        <select id="bootloader-mode"><option value="auto">Detect automatically (recommended)</option><option value="modern">Modern Nano — 115200 baud</option><option value="old">Old Nano bootloader — 57600 baud</option></select>
+        <button id="update-firmware" class="primary" disabled>Update firmware</button>
+        <progress id="firmware-progress" max="100" value="0" aria-label="Firmware update progress" hidden></progress>
+        <p id="firmware-status" class="small" role="status" aria-live="polite">Loading included TURTLE v4 firmware…</p>
+      </div>
+    </details>
+    <footer><span>TURTLE / AGGRC</span><span>Made with ChatGPT-6 Astra</span></footer>
+  </main>
+  <script type="module" src="app.js?v=8"></script>
+</body>
+</html>
